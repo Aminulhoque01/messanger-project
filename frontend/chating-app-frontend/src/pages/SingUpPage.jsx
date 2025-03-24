@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { useAuthStore } from '../store/useAuthStore';
-import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare, User } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Loader2Icon, Lock, Mail, MessageSquare, User } from 'lucide-react';
+import { toast } from 'sonner';
 
-function SingUpPage() {
+function SignUpPage() {  // Fixed spelling
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         fullName: "",
@@ -13,25 +14,39 @@ function SingUpPage() {
     const { signup, isSignUp } = useAuthStore();
 
     const validateForm = (e) => {
-        e.preventDefault();
-        console.log(e)
+        if (!formData.fullName || !formData.email || !formData.password) {
+            toast.error('Please fill all the fields');
+            return false;
+        }
+        if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            toast.error('Please enter a valid email');
+            return false;
+        }
+        if (formData.password.length < 6) {
+            toast.error('Password must be at least 6 characters long');
+            return false;
+        }
+        return true;
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log(formData);  // Log formData to make sure it's being captured correctly
+        const success = validateForm();
+        if (success === true) {
+            signup(formData);
+        }
     }
 
     return (
         <div className='min-h-screen grid lg:grid-cols-2'>
-            {/* left side  */}
-
+            {/* Left side  */}
             <div className='flex flex-col justify-center items-center p-6 sm:p-12'>
                 <div className='w-full max-w-md space-y-8'>
                     {/* Logo  */}
                     <div className='text-center mb-8'>
                         <div className='flex flex-col items-center gap-2 group'>
-                            <div className='size-12 rounded-xl bg-primary/10 flex items-center justify-center
-                        group-hover:bg-primary/20 transition-colors'>
+                            <div className='size-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors'>
                                 <MessageSquare className='size-6 text-primary'></MessageSquare>
                             </div>
                             <h1 className='text-2xl font-bold mt-2'>Create Account</h1>
@@ -107,25 +122,20 @@ function SingUpPage() {
                             </div>
                         </div>
                         <button type='submit' className='btn btn-primary w-full' disabled={isSignUp}>
-
-
                             {isSignUp ? (
                                 <>
-                                    <Loader2 className='size-5 animate-spin' />
+                                    <Loader2Icon className='size-5 animate-spin' />
                                     Loading...
                                 </>
                             ) : (
                                 "Create Account"
                             )}
                         </button>
-
                     </form>
-
-
                 </div>
             </div>
         </div>
     )
 }
 
-export default SingUpPage
+export default SignUpPage;  // Fixed spelling

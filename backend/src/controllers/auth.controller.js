@@ -4,7 +4,7 @@ import User from "../models/user.model.js";
 import bcrypt from 'bcryptjs';
 import cloudinary from "../lib/cloudinary.js"
 
-export const singup = async (req, res) => {
+export const signup = async (req, res) => {
     const { fullName, email, password } = req.body;
     console.log(fullName, email, password)
     try {
@@ -117,13 +117,14 @@ export const updateProfile=async(req,res)=>{
         console.log(error.message);
         return res.status(500).json({ message: "Internal server error" })
     }
-}
+};
 
-export const checkAuth = async(req,res)=>{
+
+export const checkAuth = async (req, res) => {
     try {
-        res.status(200).json(req.user);
+       res.status(200).json(req.user) 
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({message:"Internal Server Error"})
+        return res.status(500).json({ message: "Internal server error" })
     }
 }
